@@ -87,6 +87,7 @@ class QloraTrainer:
                 logging_steps=config_dict["logging_steps"],
                 output_dir=self.config["trainer_output_dir"],
                 report_to="tensorboard",
+                deepspeed="/home/cjk/zero2.json",
                 #optim="adamw"
             ),
             data_collator=transformers.DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
