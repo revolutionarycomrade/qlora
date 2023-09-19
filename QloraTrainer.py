@@ -96,7 +96,7 @@ class QloraTrainer:
             model=model,
             train_dataset=data["train"],
             data_collator=transformers.DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
-            training_args,
+            training_args=training_args,
         )
         model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
         trainer.train()
