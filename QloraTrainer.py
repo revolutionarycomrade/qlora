@@ -90,6 +90,7 @@ class QloraTrainer:
                 deepspeed="/home/cjk/zero2.json",
                 #optim="adamw"
             ),
+            args.distributed_state.distributed_type = DistributedType.DEEPSPEED,
             data_collator=transformers.DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
         )
         model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
