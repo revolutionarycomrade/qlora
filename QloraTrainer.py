@@ -9,6 +9,8 @@ from data_processor.OrcaDataProcessor import OrcaDataProcessor
 from data_processor.RawTextDataProcessor import RawTextDataProcessor
 from data_processor.VicunaDataProcessor import VicunaDataProcessor
 
+from accelerate.utils import DistributedType
+
 
 class QloraTrainer:
     def __init__(self, config: dict):
@@ -90,7 +92,7 @@ class QloraTrainer:
                 deepspeed="/home/cjk/zero2.json",
                 #optim="adamw"
             ),
-            args.distributed_state.distributed_type = DistributedType.DEEPSPEED,
+            args.distributed_state.distributed_type=DistributedType.DEEPSPEED,
             data_collator=transformers.DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
         )
         model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
