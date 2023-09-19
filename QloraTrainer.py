@@ -76,23 +76,26 @@ class QloraTrainer:
 
         print("Start training")
         config_dict = self.config["trainer"]
+
+        training_args=transformers.TrainingArguments(
+            per_device_train_batch_size=config_dict["batch_size"],
+            gradient_accumulation_steps=config_dict["gradient_accumulation_steps"],
+            warmup_steps=config_dict["warmup_steps"],
+            num_train_epochs=config_dict["num_train_epochs"],
+            learning_rate=config_dict["learning_rate"],
+            fp16=True,
+            logging_steps=config_dict["logging_steps"],
+            output_dir=self.config["trainer_output_dir"],
+            report_to="tensorboard",
+            deepspeed="/home/cjk/zero2.json",
+            #optim="adamw"
+        )
+        training_args.distributed_state.distributed_type=DistributedType.DEEPSPEED
+      
         trainer = transformers.Trainer(
             model=model,
             train_dataset=data["train"],
-            args=transformers.TrainingArguments(
-                per_device_train_batch_size=config_dict["batch_size"],
-                gradient_accumulation_steps=config_dict["gradient_accumulation_steps"],
-                warmup_steps=config_dict["warmup_steps"],
-                num_train_epochs=config_dict["num_train_epochs"],
-                learning_rate=config_dict["learning_rate"],
-                fp16=True,
-                logging_steps=config_dict["logging_steps"],
-                output_dir=self.config["trainer_output_dir"],
-                report_to="tensorboard",
-                deepspeed="/home/cjk/zero2.json",
-                #optim="adamw"
-            ),
-            args.distributed_state.distributed_type=DistributedType.DEEPSPEED,
+            training_args,
             data_collator=transformers.DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
         )
         model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
